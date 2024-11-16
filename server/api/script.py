@@ -18,7 +18,7 @@ gender_choices = ['M', 'F', 'U']
 age_choices = ['A', 'M', 'Y', 'U']
 health_choices = ['1', '2', '3', '4', '5', 'U']
 user_ids = [1]  # Assuming you have 3 users
-subregion_ids = [1, 2, 3, 4, 5]  # 5 subregions
+subregion_ids = [1, 2, 3]  # 5 subregions
 base_lat = 54.0
 base_lon = 12.0
 
