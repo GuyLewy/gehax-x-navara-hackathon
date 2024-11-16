@@ -18,12 +18,9 @@ interface MarkerData {
 
 // Set default marker icons
 const defaultIcon = new L.Icon({
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+  iconRetinaUrl: 'leaflet/dist/images/marker-icon-2x.png',
+  iconUrl: 'leaflet/dist/images/marker-icon.png',
+  shadowUrl: 'leaflet/dist/images/marker-shadow.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],

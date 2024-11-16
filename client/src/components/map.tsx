@@ -2,10 +2,12 @@
 
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { LatLngExpression, LatLngTuple } from 'leaflet';
+import React, { createContext } from 'react';
 
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
+import styles from './map.module.css';
 
 interface MapProps {
     posix: LatLngExpression | LatLngTuple,
@@ -16,26 +18,23 @@ const defaults = {
     zoom: 19,
 }
 
-const Map = (Map: MapProps) => {
-    const { zoom = defaults.zoom, posix } = Map
+
+const CustomMap = (props: MapProps) => {
+    const { zoom = defaults.zoom, posix } = props;
 
     return (
-        <Map className={styles.homeMap} width="800" height="400" center={DEFAULT_CENTER} zoom={12}>
-            {({ TileLayer, Marker, Popup }) => (
-              <>
-                <TileLayer
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-                />
-                <Marker position={DEFAULT_CENTER}>
-                  <Popup>
+        <MapContainer className={styles.homeMap} center={posix} zoom={zoom} style={{ width: "800px", height: "400px" }}>
+            <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+            />
+            <Marker position={posix}>
+                <Popup>
                     A pretty CSS3 popup. <br /> Easily customizable.
-                  </Popup>
-                </Marker>
-              </>
-            )}
-          </Map>
-    )
+                </Popup>
+            </Marker>
+        </MapContainer>
+    );
 }
 
-export default Map
+export default CustomMap;
