@@ -5,11 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
-import axios from "axios";
 import { FormEvent, ChangeEventHandler } from "react";
-
-
-import { cn } from "@/lib/utils";
+import { axiosInstance, cn, formSchema, fileToDataString } from "@/lib/utils";
 import {
 	Form,
 	FormControl,
@@ -58,46 +55,6 @@ const species = [
 const genders = ["Male", "Female", "Unknown"];
 
 const ages = ["Young", "Adult", "Mature", "Unknown"];
-
-export const fileToDataString = (file: File) => {
-	return new Promise<string>((resolve, reject) => {
-		const reader = new FileReader();
-		reader.readAsDataURL(file);
-		reader.onerror = (error) => reject(error);
-		reader.onload = () => resolve(reader.result as string);
-	});
-};
-
-const headers: HeadersInit = {
-	"Content-Type": `multipart/form-data;`,
-	Accept: "multipart/form-data",
-};
-
-export const axiosInstance = axios.create({
-	baseURL: "https://localhost:8000",
-	headers,
-});
-
-export const formSchema = z.object({
-	animal: z
-		.enum([
-			"Fallow deer",
-			"Red deer",
-			"Roe deer",
-			"Wild boar",
-			"Schottish Highlander",
-			"Wolf",
-		])
-		.optional(),
-	number: z.coerce.number().min(1),
-	gender: z.enum(["Male", "Female", "Unknown"]),
-	age: z.enum(["Young", "Adult", "Mature", "Unknown"]),
-	health: z.coerce.number().min(1).max(5),
-	user: z.string().optional(),
-	location: z.array(z.number()).optional(),
-	datetime: z.date().optional(),
-	remarks: z.string(),
-});
 
 export default function LoginForm() {
 	// const [isSubmiting, setIsSubmiting] = useState(false);
@@ -181,7 +138,7 @@ export default function LoginForm() {
 
 		if (!authToken) {
 			//ERROR
-			// return;
+			return;
 		}
 
 		values.user = authToken;
