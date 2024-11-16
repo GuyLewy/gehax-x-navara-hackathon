@@ -1,21 +1,9 @@
-"use-client"
-import { FC } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
-import { LatLngTuple } from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
+"use client";
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
+import "./styles.scss"
 
-interface MarkerData {
-    lat: number;
-    lng: number;
-    text: string;
-  }
-  
-  interface MapProps {
-    markers?: MarkerData[];
-    regions?: L.LatLngTuple[][];
-  }
 
+<<<<<<< Updated upstream
 // Set default marker icons
 const defaultIcon = new L.Icon({
   iconRetinaUrl: 'leaflet/dist/images/marker-icon-2x.png',
@@ -60,3 +48,23 @@ const Map: FC<MapProps> = ({ markers = [], regions = [] }) => {
 };
 
 export default Map;
+=======
+export default function MyPage() {
+  const position = [51.505, -0.09] as [number, number];
+	return (
+		<div className="h-[500px]">
+			<MapContainer center={position} zoom={13} scrollWheelZoom={false}>
+				<TileLayer
+					attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+				/>
+				<Marker position={position}>
+					<Popup>
+						A pretty CSS3 popup. <br /> Easily customizable.
+					</Popup>
+				</Marker>
+			</MapContainer>
+		</div>
+	);
+}
+>>>>>>> Stashed changes
