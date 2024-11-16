@@ -50,9 +50,11 @@ export default function LoginForm() {
             // ERROR CASE
         }
 
-        const sessionToken = (await response.json()).authorization
+        console.log(await response.json())
 
-        localStorage.setItem("sessionToken", sessionToken)
+        // console.log(sessionToken)
+
+        // localStorage.setItem("sessionToken", sessionToken)
     }
 
 	return (
