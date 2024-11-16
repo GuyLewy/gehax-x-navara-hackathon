@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include,re_path
 from rest_framework import routers
+import apiapp.views as views
 
 
 router = routers.DefaultRouter()
@@ -25,4 +26,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/users/', include('dj_rest_auth.urls')),
     path('api/users/signup', include('dj_rest_auth.registration.urls')),
+    path('plot/observations-and-subregions/', views.plot_observations_and_subregions, name='plot_observations_and_subregions'),
+    path('plot/species-distribution/', views.plot_species_distribution, name='plot_species_distribution'),
 ]
