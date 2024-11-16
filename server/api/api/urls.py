@@ -19,10 +19,10 @@ from django.urls import path,include,re_path
 from rest_framework import routers
 
 
-router = routers.defaultRouter()
+router = routers.DefaultRouter()
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/users', include('dj_rest_auth.urls')),
+    path('api/users/', include('dj_rest_auth.urls')),
     path('api/users/signup', include('dj_rest_auth.registration.urls')),
 ]
