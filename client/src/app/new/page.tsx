@@ -5,6 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
+import axios from "axios";
+import { FormEvent, ChangeEventHandler } from "react";
+
 
 import { cn } from "@/lib/utils";
 import {
@@ -56,6 +59,25 @@ const genders = ["Male", "Female", "Unknown"];
 
 const ages = ["Young", "Adult", "Mature", "Unknown"];
 
+export const fileToDataString = (file: File) => {
+	return new Promise<string>((resolve, reject) => {
+		const reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onerror = (error) => reject(error);
+		reader.onload = () => resolve(reader.result as string);
+	});
+};
+
+const headers: HeadersInit = {
+	"Content-Type": `multipart/form-data;`,
+	Accept: "multipart/form-data",
+};
+
+export const axiosInstance = axios.create({
+	baseURL: "https://localhost:8000",
+	headers,
+});
+
 export const formSchema = z.object({
 	animal: z
 		.enum([
@@ -83,6 +105,48 @@ export default function LoginForm() {
 	const [open, setOpen] = React.useState(false);
 	const [value, setValue] = React.useState("");
 
+	const [selectedImage, setSelectedImage] = useState<File>();
+	const [previewImgUrl, setPreviewimgUrl] = useState("");
+	const [progress, setProgress] = useState<number>(0);
+
+	const handleFileChange: ChangeEventHandler<HTMLInputElement> = async (
+		event
+	) => {
+		const file = event.target.files as FileList;
+		setSelectedImage(file?.[0]);
+		if (!file) {
+			return;
+		}
+		try {
+			const imgUrl = await fileToDataString(file?.[0]);
+			setPreviewimgUrl(imgUrl);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const handleImageUpload = async (event: FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		try {
+			const formData = new FormData();
+			if (selectedImage) {
+				formData.append("file", selectedImage);
+				const response = await axiosInstance.post(`/upload/file`, formData, {
+					onUploadProgress: (progressEvent) => {
+						const progress = Math.round(
+							progressEvent.total ? (100 * progressEvent.loaded) / progressEvent.total : 0
+						);
+						setProgress(progress);
+					},
+				});
+				setProgress(0);
+				console.log(response);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -99,7 +163,7 @@ export default function LoginForm() {
 
 			navigator.geolocation.getCurrentPosition(
 				(position) => {
-                    console.log(position)
+					console.log(position)
 					resolve([
 						position.coords.latitude,
 						position.coords.longitude,
@@ -177,10 +241,10 @@ export default function LoginForm() {
 											>
 												{value
 													? species.find(
-															(selection) =>
-																selection.value ===
-																value
-													  )?.label
+														(selection) =>
+															selection.value ===
+															value
+													)?.label
 													: "Select Species"}
 												<ChevronsUpDown className="opacity-50" />
 											</Button>
@@ -380,6 +444,42 @@ export default function LoginForm() {
 							</FormItem>
 						)}
 					/>
+					{/* Image Upload */}
+					<div className="col-span-full">
+						{selectedImage && progress > 0 && (
+							<div className="w-full bg-gray-200 rounded-full h-2.5 my-4">
+								<div 
+									className="bg-blue-600 h-2.5 rounded-full" 
+									style={{ width: `${progress}%` }}
+								/>
+							</div>
+						)}
+						{previewImgUrl && (
+							<div className="mt-2 mb-4">
+								<img 
+									src={previewImgUrl} 
+									alt="Preview" 
+									className="max-w-[300px] rounded-lg"
+								/>
+							</div>
+						)}
+
+						<form onSubmit={handleImageUpload} className="space-y-4">
+							<Input 
+								type="file" 
+								onChange={handleFileChange} 
+								accept="image/*"
+								className="h-11 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
+							/>
+							<Button 
+								type="submit" 
+								disabled={!selectedImage}
+								className="w-full"
+							>
+								Upload image
+							</Button>
+						</form>
+					</div>
 
 					{/* Remarks */}
 					<FormField
