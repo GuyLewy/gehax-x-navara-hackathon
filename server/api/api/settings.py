@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    "django.contrib.gis",
     'apiapp',
     'rest_framework',
     'rest_framework.authtoken',
@@ -96,7 +97,7 @@ AUTHENTICATION_BACKENDS = [
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME' : os.environ.get('POSTGRES_DB', default='postgres'),
         'USER' : os.environ.get('POSTGRES_USER',default='postgres'),
         'PASSWORD' : os.environ.get('POSTGRES_PASSWORD', default='postgres'),
