@@ -1,35 +1,41 @@
-import { useEffect } from 'react';
-import Leaflet from 'leaflet';
-import * as ReactLeaflet from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
+"use client"
 
-import styles from './Map.module.scss';
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { LatLngExpression, LatLngTuple } from 'leaflet';
 
-const { MapContainer } = ReactLeaflet;
+import "leaflet/dist/leaflet.css";
+import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
+import "leaflet-defaulticon-compatibility";
 
-const Map = ({ children, className, width, height, ...rest }) => {
-  let mapClassName = styles.map;
-
-  if ( className ) {
-    mapClassName = `${mapClassName} ${className}`;
-  }
-
-  useEffect(() => {
-    (async function init() {
-      delete Leaflet.Icon.Default.prototype._getIconUrl;
-      Leaflet.Icon.Default.mergeOptions({
-        iconRetinaUrl: 'leaflet/images/marker-icon-2x.png',
-        iconUrl: 'leaflet/images/marker-icon.png',
-        shadowUrl: 'leaflet/images/marker-shadow.png',
-      });
-    })();
-  }, []);
-
-  return (
-    <MapContainer className={mapClassName} {...rest}>
-      {children(ReactLeaflet, Leaflet)}
-    </MapContainer>
-  )
+interface MapProps {
+    posix: LatLngExpression | LatLngTuple,
+    zoom?: number,
 }
 
-export default Map;
+const defaults = {
+    zoom: 19,
+}
+
+const Map = (Map: MapProps) => {
+    const { zoom = defaults.zoom, posix } = Map
+
+    return (
+        <Map className={styles.homeMap} width="800" height="400" center={DEFAULT_CENTER} zoom={12}>
+            {({ TileLayer, Marker, Popup }) => (
+              <>
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+                />
+                <Marker position={DEFAULT_CENTER}>
+                  <Popup>
+                    A pretty CSS3 popup. <br /> Easily customizable.
+                  </Popup>
+                </Marker>
+              </>
+            )}
+          </Map>
+    )
+}
+
+export default Map
